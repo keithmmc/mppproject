@@ -39,3 +39,15 @@ class ProductStock:
 
         # self.product is an instance of the product a class 
         return f"{self.product}\nThe shop has {self.quantity} in stock \n-------------"
+
+class Customer:
+    def __init__(self):
+        self.shopping_list = []
+        self.filename = input("please enter the name of customer")
+        self.status = True 
+        
+        path = "../" + str(self.filename) + ".csv"
+    
+        
+        
+    
