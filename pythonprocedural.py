@@ -48,8 +48,18 @@ def create_and_stock_shop():
 def print_Product(p):
     (f'\nPRODUCT NAME: {p.name} \nPRODUCT PRICE: €{p.price}')
     
-    
+def print_shop(s):
+     print(f'Shop has €{s.cash} in cash')
+     for item in s.stock:
+         print_Product(item.product)
+         print(f"the shop has the following amount of items in shop")
 
+def menu_return():
+    print("-------------------------------")
+    menu = input("Press any key to return to shop menu")
+    if True:
+        menu_return()
+         
 
 def show_menu(s):     
     print("Welcome to the ATU shop")
@@ -61,6 +71,30 @@ def show_menu(s):
     print("2 Live mode")
     print("3 batch mode")
     print("x  Exit application")
+    
+    
+def print_customer(c, s):
+    print("-------------\n")
+    print(f'CUSTOMER NAME: {c.name} \nCUSTOMER BUDGET: {c.budget}')
+    print("------------------")
+    print("This is your customer order")
+    orderCost = [] 
+    
+def create_order(c, s):
+    print("creating your order")
+    print("------------------")
+    totalProductCost = 0 
+    for item in c.shopping_list:
+        for prod in s.stock:
+            if item.product.name == prod.product.name: 
+                if prod >= item.quantity: 
+                    totalProductCost = item.quantity * prod.product.price
+                    if c.budget >= totalProductCost:
+                        s.cash += totalProductCost
+                        c.budget -= totalProductCost
+                        print(f"€{totalProductCost} deducted from the customer funds for {item.quantity} of {item.product.name}.\n")
+                        prod.quantity -= item.quantity
+        
     
     
     
