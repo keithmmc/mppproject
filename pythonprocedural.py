@@ -70,10 +70,16 @@ def print_customer(c):
         print(f'The cost to {c.name} will be €{cost}')
         
 def print_shop(s):
-    print(f'Shop has { s.cash} in cash')
+    print(f'Shop has €{s.cash} in cash')
     for item in s.stock:
+        # call print_product to print out each product name, price and quantity
         print_product(item.product)
         print(f'The Shop has {item.quantity} of the above')
+        print('-------------')
+        
+
+c = read_customer("customer.csv")
+print_customer(c)
 
 def show_menu(): 
     menu = input("press any key to return to the shop")   
@@ -100,6 +106,30 @@ def live_order(s):
     c=Customer()
     c.name=input("please enter your name to place order")
     print(f"You are welcome to the ATU shop")
+    while True:
+        try:
+            # asks customer for their budget and stores in 
+            c.budget = float(input("please enter your budget  \t"))
+            break
+        # in case a float is not entered
+        except ValueError:
+            print("Please enter your budget as an number")
+    # get product name from customer and store as a Product 
+    product  = input("Please enter the name of the product you are looking for. Please note product name is case sensitive\t\t")
+    p = Product(product)
+    while True:
+        try:
+            quantity = int(input(f"Please enter the quantity of {product} you are looking for \t\t"))
+            break
+        except ValueError:
+            print("Please enter the quantity as an integer this time")
+    ps = ProductStock(p, quantity)
+    print("please wait we are checking this out")
+    c.shopping_list.append(ps)
+    return c 
+
+def clear():
+    os.clear('clear')
  
 def main():
     print("shop is open for orders today") 
