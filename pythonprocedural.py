@@ -40,150 +40,105 @@ def create_and_stock_shop():
             s.stock.append(ps)
             #print(ps)
     return s
-    
-def read_customer(file_path):
+
+def create_customer(file_path):
+    customer = Customer()
     with open(file_path) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         first_row = next(csv_reader)
-        c = Customer(first_row[0], float(first_row[1]))
+        customer = Customer(first_row[0], float(first_row[1]))
         for row in csv_reader:
             name = row[0]
             quantity = float(row[1])
             p = Product(name)
             ps = ProductStock(p, quantity)
-            c.shopping_list.append(ps)
-        return c 
-        
+            customer.shopping_list.append(ps)
+            return customer
 
+def print_customers_details(cust, sh):
+    # Values of cust.name and cust.budget are referring to customer's details defined the dataclass instance (within 'Main' method).
+    print(f"\nCustomer name: {cust.name}, budget: €{cust.budget:.2f}")
+    print(f"---- ---- ----")
+def print_product(prod):
+    # if the price is defined (we are showing the shop stock), then both name and price are shown otherwise(we are showing the customer shopping list) only product name is showm
+    if prod.price == 0:
+        print(f"Product: {prod.name};")
+    else:
+        print(f"Product: {prod.name}; \tPrice: €{prod.price:.2f}\t", end="")
+         # initialise auxiliary variables
+    total_cost = 0
 
-def print_product(p):
-    print(f'\nPRODUCT NAME: {p.name} \nPRODUCT PRICE: {p.price}')
-
-def print_customer(c):
-    print(f'CUSTOMER NAME: {c.name} \nCUSTOMER BUDGET: {c.budget}')
+    # show customer's shopping list
+    print(f"{cust.name} wants the following products: ")
     
-    for item in c.shopping_list:
-        print_product(item.product)
+    for cust_item in cust.shopping_list:
+        print(f" -{cust_item.product.name}, quantity {cust_item.quantity:.0f}. ", end="")
+        sub_total = 0 
+        match_exist = 0 
+        cust_item_name = cust_item.product_name
         
-        print(f'{c.name} ORDERS {item.quantity} OF ABOVE PRODUCT')
-        cost = item.quantity * item.product.price
-        print(f'The cost to {c.name} will be €{cost}')
-        
-def print_shop(s):
-    print(f'Shop has €{s.cash} in cash')
-    for item in s.stock:
-        # call print_product to print out each product name, price and quantity
-        print_product(item.product)
-        print(f'The Shop has {item.quantity} of the above')
-        print('-------------')
-        
+        for sh_item in sh.stock:
+            sh_item = sh_item.product.name 
+            if (cust_item_name == sh_item_name):
+                match_exist += 1 
+                if (cust_item.quantity <= sh_item.quantity):
+                    print(f"OK, there is enough in stock and ", end="")
+                      # perform the cost of the i-th item from the customer's shopping list(full order for the item is done)
+                    sub_total_full = cust_item.quantity * sh_item.product.price  # qty*price
+                    # Prints out cost of all items of the product
+                    print(f"sub-total cost would be €{sub_total_full:.2f}.")
+                    sub_total = sub_total_full  # sub total cost for the i-th item
 
-c = read_customer("customer.csv")
-print_customer(c)
+                else:  # customer wants more than in stock
+                    # check how many can be bought
+                    partial_order_qty = cust_item.quantity - \
+                        (cust_item.quantity -
+                         sh_item.quantity)  # will buy all that is in stock
 
-def show_menu(): 
-    menu = input("press any key to return to the shop")   
-    if True:
-        show_menu()
+                    # perform the cost of the i-th item from the customer's shopping list
+                    sub_total_partial = partial_order_qty * \
+                        sh_item.product.price  # partial qty * price
+                    # Prints out cost of all items of the product
+                    print(f"\tHowever only {partial_order_qty:.0f} is available and sub-total cost for that many would be €{sub_total_partial:.2f}.")
+                    sub_total = sub_total_partial
+
+                # addition of sub totals
+                total_cost = total_cost + sub_total
+
+        # if customer wants a product that is not in the shop
+        if (match_exist == 0):  # there is no match of product
+            # Prints out cost of all items of the product
+            print(
+                f"\tThis product is not available. Sub-total cost will be €{sub_total:.2f}.")
+
+    # Prints out cost of all items of the product
+    print(f"\nTotal shopping cost would be €{total_cost:.2f}. \n")
+
+    return total_cost
+
+
+def process_order(cust, sh, total_cost) :
+    if (cust.budget < total_cost):
+        print('There is enough to make a purchase from shop  short of €{(total_cost - cust.budget):.2f}. ", end="')
+    else:
+        print("placing your order now please wait while we process your order")
+    for cust_item in cust.shopping_list:
+        match_exist = 0 
+    for sh_item in sh.stock:
+        sh_item_name = sh_item.product.name 
         
-
         
     
-def show_menu():
-    print("-----------------")
-    print("Welcome to the ATU shop")
-    print("\t\tSelect 1 for Shop Overview")
-    print("\t\tSelect 2 for Batch orders")
-    print("\t\tSelect 3 for Live orders")
-    print("\t\tSelect 0 to Exit Shop")
-    
-def clear():
-    os.system('clear')
-    
-    
-def live_order(s):
-    shopping_list = [] 
-    c=Customer()
-    c.name=input("please enter your name to place order")
-    print(f"You are welcome to the ATU shop")
-    while True:
-        try:
-            # asks customer for their budget and stores in 
-            c.budget = float(input("please enter your budget  \t"))
-            break
-        # in case a float is not entered
-        except ValueError:
-            print("Please enter your budget as an number")
-    # get product name from customer and store as a Product 
-    product  = input("Please enter the name of the product you are looking for. Please note product name is case sensitive\t\t")
-    p = Product(product)
-    while True:
-        try:
-            quantity = int(input(f"Please enter the quantity of {product} you are looking for \t\t"))
-            break
-        except ValueError:
-            print("Please enter the quantity as an integer this time")
-    ps = ProductStock(p, quantity)
-    print("please wait we are checking this out")
-    c.shopping_list.append(ps)
-    return c 
-
-def clear():
-    os.clear('clear')
  
-def main():
-    print("shop is open for orders today") 
-    s = create_and_stock_shop
-    while True: 
-        show_menu()
-        choice = input("\n Please select one of the options from the menu")
-        if(choice == 1):
-            print("shop overview")
-            print_shop(s)
-            show_menu() 
-        elif(choice == 2):
-            print("batch orders")
-            c = read_customer()
-            if c:
-                print_customer(c,s)
-                process_order(c,s)
-                show_menu() 
-                
-                
-
-        
-
-        # if option 3 chosen, create customer by calling the live_order function   
-        elif (choice=="3"):            
-            print("3:*** LIVE MODE ***")
-            print("Please choose from our products listed below")
-            print_shop(s)
-            c = live_order(s)
-            # print customer details
-            print_customer(c,s)
-            # process the customers order
-            process_order(c,s)
-
-        
-
-        # if user selects 0, this signals they wish to exit the program
-        elif (choice == "0"):
-            # exit clause to break out out of the entire program and back to the command prompt
-            print("\nThank you for shopping here. Goodbye.")
-            break
-
-    ## for anything else, display the menu
-        else: 
-            show_menu()
-
-if __name__ == "__main__":
-    # only execute if run as a script
-
-    # call the main function above
-    main()
-                
-
-     
-
-
-
+def display_menu():
+    print("")
+    print("welcome to the atu shop")
+    print("1-shop overview")
+    print("2-Customer A- successful")
+    print("3-Customer B- no funds")
+    print("4-Customer C- Exceeds order")
+    print("5-Live mode")
+    print("0-To exit this shop")
+    
+    
+    
