@@ -109,7 +109,53 @@ def process_order(c,s): ## this function will process a order for the shop
                 #checking if the quantity will be enough to fulfill an order 
                 if prod.quantity >= item.quantity:
                     totalProductCost = item.quantity * prod.product.price 
-                    
+                if c.budget >= totalProductCost:
+                    s.cash += totalProductCost
+                    s.cash -= totalProductCost
+                    print(f"€{totalProductCost} will be deducted from your funds for {item.quantity} of {item.product.name}.\n")
+                    prod.quantity -= item.quantity
+                elif c.budget < totalProductCost:
+                     print(f"You have insufficient funds, you only have €{c.budget} but you need €{totalProductCost} to pay for {item.product.name}")
+                        # no purchase takes place, pass
+                c.budget -= 0 
+            elif prod.quantity < item.quantity:
+                 print(f"We only have the following {prod.quantity} of {prod.product.name} at the moment. You will be charged only for the products sold.\n")
+                 totalProductCost = prod.quantity * prod.product.price
+                 if c.budget >= totalProductCost:
+                      print(f"€{totalProductCost} will br deducted from your funds for {prod.quantity} unit(s) of {item.product.name}.\n")                 
+                 prod.quantity += prod.quantity 
+                 s.cash += totalProductCost
+                 c.budget -= totalProductCost
+            elif c.budget < totalProductCost:
+                  print(f"Insufficient funds, Customer has €{c.budget} but €{totalProductCost} required for {item.product.name}\n")
+                        # no purchase takes place, pass
+            c.budget -= 0
+    print(f"UPDATING CASH\n-------------------\nCustomer {c.name} has €{c.budget} left\n.")
+    
+def print_customer(c,s):
+    print(f'CUSTOMER NAME: {c.name} \nCUSTOMER BUDGET: {c.budget}')
+    print("printing customer order")
+    orderCost = [] 
+    for item in c.shopping_list:
+        print_product(item.product)
+        print(f"{c.name} ORDERS  {item.quantity} OF THE ABOVE PRODUCT\n")
+    for item in c.shopping_list:
+        for prod in s.stock:
+            print("We are checking the stock of the shop please wait")
+            print("----------------------------------------------------")
+            print("the shop has got the following items currently in stock")
+            for item in c.shopping_list:
+                for prod in s.stock:
+                    if item.product.name == prod.product.name: 
+                        cost = item.quantity * prod.product.price
+                orderCost.append(cost)
+                
+                print(f"{item.quantity} units of {item.product.name} at €{prod.product.price} per unit for cost of €{item.quantity *prod.product.price }\n")
+
+def live_order(s): ## the following is a function that will complete a live order for shop 
+    shopping_list = [] 
+    c=Customer()
+    c.customerName = input("Can you please enter your name")              
 
 
 
