@@ -82,7 +82,7 @@ def read_customer():
     except Exception as err:
         print("you have uploaded the wrong customer file.")
         # return the user to the menu
-        return_to_menu()
+        show_menu()
         
 
 def show_menu(): ## this is a function to show the menu and list the options
@@ -155,7 +155,96 @@ def print_customer(c,s):
 def live_order(s): ## the following is a function that will complete a live order for shop 
     shopping_list = [] 
     c=Customer()
-    c.customerName = input("Can you please enter your name")              
+    c.customerName = input("Can you please enter your name")   
+    print("hello and welcome to the ATU shop.{c.name}")      
+    while True:
+        try:
+            c.budget = float(input("please enter your budget  \t"))
+            break
+        # in case a float is not entered
+        except ValueError:
+            print("Please enter your budget as an number")
+    # get product name from customer and store as a Product 
+    product  = input("Please enter the name of the product you are looking for. Please note product name is case sensitive")
+    p = Product(product)
+
+    # ask customer for quantity of item, ensure an integer is accepted
+    while True:
+        try:
+            quantity = int(input(f"Please enter the quantity of {product} you are looking for "))
+            break
+        # in case an integer is not entered
+        except ValueError:
+            print("Please enter the quantity as an integer")
+    # create a ProductStock using the product and quantity
+    ps = ProductStock(p, quantity)    
+    print("Please wait while we check")
+    # append the items to the customers shopping list
+    c.shopping_list.append(ps)
+    # return a customer
+    return c    
+
+def clear():
+    os.system('clear')
+    
+def print_product(p):
+    print(f'\nPRODUCT NAME: {p.name} \nPRODUCT PRICE: €{p.price}')
+    
+def print_shop(s):
+    print(f'Shop has €{s.cash} in cash')
+    for item in s.stock:
+        # call print_product to print out each product name, price and quantity
+        print_product(item.product)
+        print(f'The Shop has {item.quantity} of the above')
+        print('-------------')
+    
+def main():
+    clear() 
+    print("welcome to the ATU shop")
+    s = create_and_stock_shop()
+    while True:
+        show_menu()
+        selection = input("please enter the option your looking for from the menu")
+        if (selection =="1"):
+            print("1: SHOP OVERVIEW")
+            print_shop(s)
+            show_menu() 
+        elif (selection =="2"):
+            print("2 batch orders")
+            c = read_customer()
+            if c:
+                print_customer(c,s)
+                process_order(c,s)
+            show_menu()
+        elif (selection=="3"):            
+            print("3:*** LIVE MODE ***")
+            print("Please choose from our products listed below")
+            print_shop(s)
+            c =live_order(s)
+            # print customer details
+            print_customer(c,s)
+            # process the customers order
+            process_order(c,s)
+
+            # return to menu
+            show_menu() 
+
+        # if user selects 0, this signals they wish to exit the program
+        elif (selection == "0"):
+            # exit clause to break out out of the entire program and back to the command prompt
+            print("\nThank you for shopping here. Goodbye.")
+            break
+
+    ## for anything else, display the menu
+        else: 
+            show_menu()
+
+if __name__ == "__main__":
+    # only execute if run as a script
+
+    # call the main function above
+    main()
+       
 
 
 
