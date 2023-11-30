@@ -151,9 +151,43 @@ def process_order(self,c):
         
 def update_cash(self,c):
     self.process = False 
-    
-
+    if c.budget >= self.totalProductCost:
+        self.cash += self.totalProductCost
+        c.budget -= self.totalProductCost 
+        if self.saleQty>0:
+              print("€{self.totalProductCost} deducted from the customer funds for {self.saleQty} unit(s) of {self.product.name()}")
+              self.process = True
+        elif c.budget < self.totalProductCost:
+            print("Insufficient funds, Customer has €{c.budget} but €{self.totalProductCost} required for {self.saleQty} unit(s) of {self.product_name}")
             
+def check_stock(self, list_item):
+    for shop in shop_item in self.stock:
+        if list_item.name() == shop_item.name():
+            self.product_name == shop_item.name()
+            self.product = shop_item.get_product()
+        if list_item.quantity <= shop_item.quantity:
+                    
+                    self.totalProductCost = list_item.quantity *shop_item.product.price
+                   
+                    self.saleQty = list_item.quantity
+                    return self.totalProductCost, self.product, self.saleQty, self.product_name
+                    
+               
+        elif list_item.quantity > shop_item.quantity:
+                    print("We only have {shop_item.quantity} of {shop_item.name()} at the moment. You will be charged only for the products sold")
+                   
+                    self.totalProductCost = shop_item.quantity *shop_item.product.price
+                    self.saleQty = shop_item.quantity
+                    return self.totalProductCost, self.product, self.saleQty, self.product_name
+           
+        if list_item.name() != shop_item.name():
+                self.product = list_item
+                self.saleQty =0
+                self.totalProductCost =0
+                
+
+def clear():
+    os.system('clear')           
             
 def main():
     print("Welcome to the ATU shop ...\n")
