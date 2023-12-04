@@ -246,13 +246,13 @@ class Shop:
             product.set_quantity(self.saleQty)
             
 
-    def display_menu(self):
+    def show_menu(self):
         while True:
     # clear the screen of previous input
     #clear()
             print("\n")
             print("\n")
-            print("\t\tWelcome to our humble little shop\n")
+            print("\t\tWelcome to the atu shop\n")
             print("\t\t----------------------------------")
             print("\t\tSelect 1 for Shop Overview")
             print("\t\tSelect 2 for Batch orders")
@@ -301,13 +301,13 @@ class Shop:
             
             else:
                 print("Please choose an option from the menu")
-                self.display_menu()
+                self.show_menu()
                 
     # a method to return to menu
     def return_to_menu(self):
         menu = input("\n Hit any key to return to main menu")
         if True:
-            self.display_menu()
+            self.show_menu()
 
 def clear():
     os.system('clear')   
@@ -315,8 +315,8 @@ def clear():
 # the main method just creates a shop object 
 def main():
     print("Setting up the shop for today ...\n")
-    s = Shop("../stock.csv")
-    s.display_menu()
+    s = Shop("stock.csv")
+    s.show_menu()
         
 if __name__ == "__main__":
     # clear the screen
