@@ -3,32 +3,28 @@ from dataclasses import dataclass, field
 from typing import List
 import csv
 
-'''
-# ===== ===== ===== ===== ===== =====
-# Definiton of dataclasses
-# ===== ===== ===== ===== ===== =====
-'''
+
 
 
 @dataclass
-# This dataclass defines the data structure (blueprint) for products offered in the shop. It consists of two variables, defined inside.
+# This is the dataclass for Product 
 class Product:
     name: str
     price: float = 0.0
 
 
 @dataclass
-# This dataclass defines the blueprint for products offered in the shop.
+# This dataclass for product stock
 class ProductStock:
-    # dataclass Product, defined above (i.e. nested dataclasses)
+    # dataclass Product, 
     product: Product
     quantity: int
 
 
 @dataclass
-# This dataclass is used to show the stock both shop and customer.
+# This dataclass is used to show what stock for shop and customer
 class ProductQuantity:
-    product: Product  # nested dataclasses
+    product: Product  
     quantity: int
 
 
@@ -40,43 +36,37 @@ class Shop:
 
 
 @dataclass
-# Defines the customer blueprint.
+# customer class
 class Customer:
     name: str = ""
     budget: float = 0.0
     shopping_list: List[ProductQuantity] = field(default_factory=list)
 
 
-'''
-# ===== ===== ===== ===== ===== =====
-# Definition of the functions
-# ===== ===== ===== ===== ===== =====
-'''
+
 
 
 # ----- ----- ----- ----- -----
 # Create shop - read data from file
 # ----- ----- ----- ----- -----
 def create_and_stock_shop():
-    shop = Shop()  # initialise an instance of the Shop dataclass
+    shop = Shop()  # starting an instance of the shop dataclass 
     with open('Data/shop_stock.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         first_row = next(csv_reader)
-        # reads and assigns amount of cash in shop from file
+        # reads in the amount of cash in shop from file and then assigns it
         shop.cash = float(first_row[0])
         for row in csv_reader:
-            # initialise instance of Product; assigns product name [0] and price [1]
+            # starts an instance of Product; then assigns product name [0] and price [1]
             p = Product(row[0], float(row[1]))
-            # initialise instance of ProductStock; assigns product stock
+            # starting an instance of ProductStock; and assigning the product stock
             ps = ProductStock(p, float(row[2]))
-            shop.stock.append(ps)  # add subsequent items to the list
+            shop.stock.append(ps)  # this adds subsequent items to the list for shop
             # print(ps)
     return shop
 
 
-# ----- ----- ----- ----- -----
-# Create customer - read data from file
-# ----- ----- ----- ----- -----
+
 def create_customer(file_path):
     # print("inside 'create customer' function")  # for testing - ok
     # initialise an instance of the Customer dataclass - is this line necessary?
@@ -84,7 +74,7 @@ def create_customer(file_path):
     with open(file_path) as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         first_row = next(csv_reader)
-        # reads and assigns name [0] and budget [1] from file
+        # reading in the customer file and then assigning name [0] and budget [1] from file that has been read in
         customer = Customer(first_row[0], float(first_row[1]))
         # print(f"1: Printing customer's name: {str(customer.name)} and budget: {customer.budget:.2f}") # for testing - ok
         for row in csv_reader:
@@ -101,47 +91,43 @@ def create_customer(file_path):
         return customer
 
 
-# ----- ----- ----- ----- -----
-# Printing product info
-# ----- ----- ----- ----- -----
+
 def print_product(prod):
-    # if the price is defined (we are showing the shop stock), then both name and price are shown otherwise(we are showing the customer shopping list) only product name is showm
+    # if the price is defined (we are showing the shop stock), then both name and price are shown otherwise(we are showing the customer shopping list) only product name is shown
     if prod.price == 0:
         print(f"Product: {prod.name};")
     else:
         print(f"Product: {prod.name}; \tPrice: €{prod.price:.2f}\t", end="")
 
 
-# ----- ----- ----- ----- -----
-# Show customers details
-# ----- ----- ----- ----- -----
+
 def print_customers_details(cust, sh):
 
-    # Values of cust.name and cust.budget are referring to customer's details defined the dataclass instance (within 'Main' method).
+    # printing the Values of cust.name and cust.budget that refer to the customer's details that are defined in the dataclass instance (within 'Main' method).
     print(f"\nCustomer name: {cust.name}, budget: €{cust.budget:.2f}")
     print(f"---- ---- ----")
 
-    # initialise auxiliary variables
+    # starting the auxiliary variables
     total_cost = 0
 
-    # show customer's shopping list
+    # printing a customer's shopping list
     print(f"{cust.name} wants the following products: ")
 
-    # loop over the items in the customer shopping list
+    # looping over all the items in the customer shopping list
     # Iteration of from i=0, increasing by 1, through all the items the customer has. Variable 'index' (defined in the struct) by defult starts with value 0 (zero)
     for cust_item in cust.shopping_list:
         # print(f"{cust_item.product.name} ORDERS {cust_item.quantity} ")  # for testing - ok
 
-        # Show customers details (example of chain-accessing the data in the nested dataclasses)
+        # Showing a customers details 
         print(
             f" -{cust_item.product.name}, quantity {cust_item.quantity:.0f}. ", end="")
 
-        # initialise auxiliary variable
-        sub_total = 0  # sub total cost for items from the shopping list
+        # starting  auxiliary variable
+        sub_total = 0  # showing the sub total cost for items from the shopping list
 
         # Calculating sub-total cost of all items of the i-th product in customer's shopping list.
 
-        # check whether the product from customer's shopping list is matches with the shop stock list of products
+        # checking whether the product from customer's shopping list is matches with the shop stock list of products
         match_exist = 0  # initialy set to zero, assuming there is no match
         # assign the i-th product from the customer schopping list as a shorthand
         cust_item_name = cust_item.product.name
@@ -152,74 +138,72 @@ def print_customers_details(cust, sh):
             # assign the j-th product from the shop stock list as a shorthand
             sh_item_name = sh_item.product.name
 
-            # check if there is match (customer's item is in stock)
-            if (cust_item_name == sh_item_name):
-                match_exist += 1  # set to one, meaning there is a matach
+            # checking if there is match and if the customer's item is in stock
+            if cust_item_name == sh_item_name:
+                match_exist += 1  # set to one, meaning  that there is a match in stock
 
-                # check if there is enought of the products in the shop stock
+                # checking if there is enough of the products in the shops stock
 
-                # sufficient amount of the product in the shop stock
-                if (cust_item.quantity <= sh_item.quantity):
-                    # Prints out cost of all items of the product
+                # showing that there sufficient amount of the product in the shop stock
+                if cust_item.quantity <= sh_item.quantity:
+                    # printing out cost of all items of the product
                     print(f"\tOK, there is enough in stock and ", end="")
 
                     # perform the cost of the i-th item from the customer's shopping list(full order for the item is done)
                     sub_total_full = cust_item.quantity * sh_item.product.price  # qty*price
-                    # Prints out cost of all items of the product
+                    # Printing out cost of all items of the product
                     print(f"sub-total cost would be €{sub_total_full:.2f}.")
                     sub_total = sub_total_full  # sub total cost for the i-th item
 
-                else:  # customer wants more than in stock
-                    # check how many can be bought
+                else:  # if the customer wants more than is in stock
+                    # checking how many items can be bought
                     partial_order_qty = cust_item.quantity - \
                         (cust_item.quantity -
-                         sh_item.quantity)  # will buy all that is in stock
+                         sh_item.quantity)  # will buy all that there is in the shops stock
 
-                    # perform the cost of the i-th item from the customer's shopping list
+                    # performing the cost of the i-th item from the customer's shopping list
                     sub_total_partial = partial_order_qty * \
                         sh_item.product.price  # partial qty * price
-                    # Prints out cost of all items of the product
+                    # Printing out the cost of all items of the product
                     print(
                         f"\tHowever only {partial_order_qty:.0f} is available and sub-total cost for that many would be €{sub_total_partial:.2f}.")
                     sub_total = sub_total_partial
 
-                # addition of sub totals
+                # performing all addition of sub totals
                 total_cost = total_cost + sub_total
 
         # if customer wants a product that is not in the shop
-        if (match_exist == 0):  # there is no match of product
-            # Prints out cost of all items of the product
+        if match_exist == 0:  # if there is no match of product
+            # Printing out cost of all items of the product
             print(
                 f"\tThis product is not available. Sub-total cost will be €{sub_total:.2f}.")
 
-    # Prints out cost of all items of the product
+    # Printing out cost of all items of the product
     print(f"\nTotal shopping cost would be €{total_cost:.2f}. \n")
 
     return total_cost
 
 
-# ----- ----- ----- ----- -----
-# update shop stock, shop cash, customer money(shopping list remains unchanged)
-# ----- ----- ----- ----- -----
+
 def process_order(cust, sh, total_cost):
 
-    # Check whether the customer can afford the desired items
-    if (cust.budget < total_cost):  # customer is short of money
+    # Checking if the customer can afford the desired items
+    if (cust.budget < total_cost):  # if the customer is short of money
         print(
             f"Unfortunately, the customer does not have enough money for all the desired items - short of €{(total_cost - cust.budget):.2f}. ", end="")
         print(
             f"Shopping aborted. Come back with more money or negotiate your shopping list.\n")
 
-    else:  # customer has enough money
+    else:  # else the customer has enough money
         print(f"Processing...")
 
         # loop over the items in the customer shopping list
         # Iteration of from i = 0, increasing by 1, through all the items the customer has. Variable 'index' (defined in the struct) by defult starts with value 0 (zero)
         for cust_item in cust.shopping_list:
-            # check whether the product from customer's shopping list is matches with the shop stock list of products
+            # checking whether the product from customer's shopping list is matches with the shop stock list of products
             match_exist = 0  # initialy set to zero, assuming there is no match
 
-            # assign the i-th product from the customer schopping list as a shorthand
+            # assigning the i-th product from the customer schopping list as a shorthand
             cust_item_name = cust_item.product.name
 
             # Iterate through shop stock list to match items from customer's shopping list
@@ -227,44 +211,44 @@ def process_order(cust, sh, total_cost):
                 # assign the j-th product from the shop stock list as a shorthand
                 sh_item_name = sh_item.product.name
 
-                if (cust_item_name == sh_item_name):  # if both product names are identical
+                if cust_item_name == sh_item_name:  # if both product names are identical
                     match_exist = + 1  # set to one, meaning there is a matach
 
-                    # check products availability
-                    # sufficient amount of the product in the shop stock
-                    if (cust_item.quantity <= sh_item.quantity):
-                        # update the shop stock(full order)
+                    # checking for a products availability
+                    # if there is sufficient amount of the product in the shop stock
+                    if cust_item.quantity <= sh_item.quantity:
+                        # updating all the shop stock(full order)
                         sh_item.quantity = sh_item.quantity - cust_item.quantity
                         print(
                             f"Stock quantity of {cust_item.product.name} updated to: {sh_item.quantity:.0f}")
 
-                    else:  # customer wants more than in stock
-                        # check how many can be bought
+                    else:  # if the customer wants more than in stock
+                        # checking how many can be bought
                         partial_order_qty = cust_item.quantity - \
                             (cust_item.quantity - sh_item.quantity)
                         # will buy all that is in stock
 
-                        # perform the cost of the i-th item from the customer's shopping list
+                        # performing the cost of the i-th item from the customer's shopping list
                         sub_total_partial = partial_order_qty * \
                             sh_item.product.price  # partial qty * price
 
                         # print(f"Only quantity of {cust_item.product.name} is available and that many bought. Sub-total cost was €{sub_total_partial:.2f}. ", end="")
                         # Prints out cost of all items of the product
 
-                        # update the shop stock(partial order)
+                        # updateing the shop stock(partial order)
                         sh_item.quantity = sh_item.quantity - partial_order_qty
 
                         print(
                             f"Stock quantity of {cust_item.product.name} updated to {sh_item.quantity:.0f}.")
 
             # if customer wants a product that is not in the shop
-            if (match_exist == 0):  # there is no match of product
+            if match_exist == 0:  # if there is no match of product
                 print(f"\tThis product not available. Sub-total cost will be €0.00.")
 
-        # update the cash in shop
+        # updating the cash in shop
         sh.cash = sh.cash + total_cost
 
-        # update the customer's money
+        # updating the customer's money
         cust.budget = cust.budget - total_cost
 
         print(f"\nShop has now €{sh.cash:.2f} in cash. ")
@@ -275,18 +259,16 @@ def process_order(cust, sh, total_cost):
     return
 
 
-# ----- ----- ----- ----- -----
-# interactive(live) mode
-# ----- ----- ----- ----- -----
+
 def interactive_mode(sh, budget):
 
     # print(f"Budget: {budget:.2f}")  # for testing - ok
 
-    # print shops stock
+    # printing all of the shops stock
     print(f"\nThe following products are available in shop:")
     print_shop(sh)
 
-    # declare required variables
+    # declaring the required variables
     product_name = ""
     quantity = 0
 
@@ -295,7 +277,7 @@ def interactive_mode(sh, budget):
     while product_name != "x":
 
         print()
-        # Request input from the user, assign to the variable
+        # Requesting the input from the user, asking them to assign a variable to show selecting choice
         product_name = input("\nEnter desired product name (x to exit): ")
 
         # print(f"Test 2: Customer budget: {budget:.2f}, product: {product_name}") # for testing - ok
@@ -304,8 +286,8 @@ def interactive_mode(sh, budget):
 
         print(f"Searching for: {product_name}")
 
-        # check whether the product from customer's shopping list is matches with the shop stock list of products
-        match_exist = 0  # initialy set to zero, assuming there is no match
+        # checking whether the product from customer's shopping list is matches with the shop stock list of products
+        match_exist = 0  # this is set to zero, assuming there is no match
 
         # Iterate through shop stock list to match items from customer's shopping list
         for sh_item in sh.stock:
@@ -319,79 +301,76 @@ def interactive_mode(sh, budget):
             # assign the j-th product from the shop stock list as a shorthand
             sh_item_name = sh_item.product.name
 
-            # product found in shop, proceeding...
-            if (product_name == sh_item_name):  # true, if both product names are identical
+            # if the product is found in shop, 
+            if product_name == sh_item_name:  # true, if both product names are identical
 
                 match_exist += 1  # set to one, meaning there is a matach
 
                 quantity = int(input("Enter desired quantity: "))
 
-                # check products availability
-                # sufficient amount of the product in the shop stock
+                # checking a products availability the shop
+                # chceking if there is a sufficient amount of the product in the shop stock
                 if (quantity <= sh_item.quantity):
 
-                    # check product price and calculate sub-total cost(price*qty)
+                    # checking the product price and calculating the sub-total cost(price*qty)
                     sub_total = sh_item.product.price * quantity
 
-                    # check if customer can afford it
+                    # checking if the customer can afford it
                     if (budget >= sub_total):
 
-                        # update customer's budget
+                        # updating the customer's budget
                         budget = budget - sub_total
                         print(
                             f"Bought! Sub total cost was €{sub_total:.2f}. Budget after buying this item: €{budget:.2f}.")
 
-                        # update the shop stock(full order fulfilled)
+                        # updating the shops stock(full order fulfilled)
                         sh_item.quantity = sh_item.quantity - quantity
 
-                        # update the shop cash
+                        # updating the shops cash
                         sh.cash = sh.cash + sub_total
                         print(
                             f"Stock quantity of {sh_item_name} in shop updated to: {sh_item.quantity:.0f}. Cash in shop now: {sh.cash:.2f}.")
 
-                    else:  # customer cannot afford all
+                    else:  # The customer cannot afford all for order
                         print(
                             f"Unfortunately, you do not have enough money for that many - short of €{(sub_total - budget):.2f}. ", end="")
                         print(
                             f"Come back with more money or reduce the quantity.")
 
-                # customer wants more than in stock
+                # if the customer wants more than in stock
                 else:
-                    # check how many can be bought and buy all that is in stock
+                    # checking how many items can be bought and buy all that is in stock
                     partial_order_qty = quantity - \
                         (quantity - sh_item.quantity)
 
-                    # perform the sub-total cost for the item
+                    # performing the sub-total cost for the item
                     sub_total_partial = partial_order_qty * \
                         sh_item.product.price  # partial qty * price
-                    # Prints out cost of all items of the product
+                    # Printing out the cost of all items of the product
                     print(
                         f"Only {partial_order_qty:.0f} is available and that many bought. Sub-total cost was €{sub_total_partial:.2f}. ")
 
-                    # update customer's budget
+                    # updating the customer's budget
                     budget = budget - sub_total_partial
                     print(
                         f"Budget after buying this item: €{budget:.2f}.")
 
-                    # update the shop stock(partial order) and cash
+                    # updating the shop's stock(partial order) and cash
                     sh_item.quantity = sh_item.quantity - partial_order_qty
 
-                    # update the shop cash
+                    # updating the shop's cash
                     sh.cash = sh.cash + sub_total_partial
                     print(
                         f"This product is no longer avilable in shop (stock: {sh_item.quantity:.0f}). Cash in shop now: {sh.cash:.2f}.")
 
-        if (match_exist == 0):  # product not available in stock
+        if (match_exist == 0):  # if the product is not available in stock
             print("Product not found in shop.")
 
 
-# ----- ----- ----- ----- -----
-# Print out of the shop details
-# ----- ----- ----- ----- -----
 
 
-def print_shop(sh):  # takes 'shop' dataclass as a parameter
-    # Show shop detials
+def print_shop(sh):  # takeing in the shop's dataclass as a parameter
+    # Showing the shop info
     # print(sh)  # for testing - ok
     print(f"\nShop has {sh.cash:.2f} in cash")
     print("==== ==== ====")
@@ -400,14 +379,12 @@ def print_shop(sh):  # takes 'shop' dataclass as a parameter
         print(f"Available amount: {item.quantity:.0f}")
 
 
-# ----- ----- ----- ----- -----
-# The shop main menu
-# ----- ----- ----- ----- -----
+
 
 separator = "=" * 15
 
 
-def display_menu():
+def display_menu():#displaying the shop menu with all options for choice
 
     print("")
     print(separator)
@@ -423,22 +400,16 @@ def display_menu():
     print(separator)
 
 
-# ----- ----- ----- ----- -----
-# The main function - start of the program
-# ----- ----- ----- ----- -----
 
-
-def shop_menu(shop):
-    '''
-    Shop menu
-    '''
+def shop_menu(shop): #main function for shop
+   
 
     # Main menu screen
     display_menu()
 
-    while True:  # this is a 'forever' loop, unless interupted (break)
+    while True:  # this is be a loop that is forver, unless if it is broken
 
-        # Request input from the user, assign to variable choice
+        # Requesting the input from a user, assigning to the variable choice
         choice = input("Enter your choice: ")
 
         if (choice == "1"):
@@ -451,62 +422,62 @@ def shop_menu(shop):
 
             # create customer A struct (good case)
             customer_A = create_customer(
-                "Data/customer_good.csv")  # read data from a file
+                "Data/customer_good.csv")  # reading data from a file
 
-            # print customer details and shopping list
+            # printing the customer details and the shopping list
             total_cost = print_customers_details(customer_A, shop)
 
-            # show customer's shopping list by calling relevant method
+            # showing the customer's shopping list and then calling the relevant method
             process_order(customer_A, shop, total_cost)
 
             display_menu()
 
         elif (choice == "3"):
-            # create customer B struct (good case)
+            # creating customer B choice (good case)
             customer_B = create_customer(
-                "Data/customer_insufficient_funds.csv")  # read data from a file
+                "Data/customer_insufficient_funds.csv")  # reading the data from a file
 
-            # print customer details and shopping list
+            # printing all of the customer details and shopping list
             total_cost = print_customers_details(customer_B, shop)
 
-            # show customer's shopping list by calling relevant method
+            # showing all of the customer's shopping list and calling relevant method
             process_order(customer_B, shop, total_cost)
 
             display_menu()
 
         elif (choice == "4"):
-            # create customer C struct (good case)
+            # create customer C choice 
             customer_C = create_customer(
-                "Data/customer_exceeding_order.csv")  # read data from a file
+                "Data/customer_exceeding_order.csv")  # reading the data from a file
 
-            # print customer details and shopping list
+            # printing the customer details and their shopping list
             total_cost = print_customers_details(customer_C, shop)
 
-            # show customer's shopping list by calling relevant method
+            # showing the customer's shopping list and calling the relevant method
             process_order(customer_C, shop, total_cost)
 
             display_menu()
 
         elif (choice == "5"):
 
-            # Welcoming message
+            # Welcome message
             print("\nInteractive shopping mode")
             print("-------------------------")
 
-            # get user's name
-            customer_name = input("What's your name, good customer?: ")
+            # getting the user's name
+            customer_name = input("What's your name ")
             print(f"Welcome, {customer_name}. ")
 
-            # get user's budget
+            # getting the user's budget
             budget = float(
                 input("Enter your budget: "))
 
-            # go to the interactive mode
+            # going back to the interactive mode
             interactive_mode(shop, budget)
 
             display_menu()
 
-        elif (choice == "9"):  # Exit condition
+        elif (choice == "9"):  # Exit the shop 
             print("")
             break
 
@@ -514,38 +485,23 @@ def shop_menu(shop):
             display_menu()
 
 
-'''
-# ===== ===== ===== ===== ===== =====
-# The main function - start of the program
-# ===== ===== ===== ===== ===== =====
-'''
-
 
 def main():
-    '''
-    This is the main function the program. It defines a starting point and controls all other functionality of the program. It is called automatically at the program start.
-    '''
+  
 
     # Clear screen
     os.system("cls")   # for Windows systems
     os.system("clear")  # for Linux systems
 
-    print("\n\n>>> Multi-Paradigm Programming Project by Andrzej Kocielski, 2020 <<<")
+  
 
-    '''
-    Create shop only once, upon the program start
-    '''
-    shop_one = create_and_stock_shop()  # assign data from a file to variable shop_one.
-    # print(shop_one) # for testing - ok
+  
+    shop_one = create_and_stock_shop()  # assigning the data from a file to variable shop_one.
+    # printing(shop_one) # for testing - ok
 
     shop_menu(shop_one)  # calls function that displays the shop menu
 
 
-'''
-# ===== ===== ===== ===== ===== =====
-# Check dependencies
-# ===== ===== ===== ===== ===== =====
-'''
 
 if __name__ == "__main__":
     # execute only if run as a script
