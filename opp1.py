@@ -1,18 +1,10 @@
 import os
 import csv
 
-'''
-# ===== ===== ===== ===== ===== =====
-# Definiton of classes
-# ===== ===== ===== ===== ===== =====
-'''
-
-# ----- ----- ----- ----- -----
-# Product class
-# ----- ----- ----- ----- -----
 
 
-class Product:
+
+class Product: # setting up the product class
 
     def __init__(self, name, price=0):
         self.name = name
@@ -21,12 +13,10 @@ class Product:
     def __repr__(self):
         return f"Product: {self.name}; \tPrice: {self.price:.2f}"
 
-# ----- ----- ----- ----- -----
-# Product_stock class
-# ----- ----- ----- ----- -----
 
 
-class Product_stock:
+
+class Product_stock: # setting up the product stock class 
 
     def __init__(self, product, quantity):
         self.product = product
