@@ -29,14 +29,14 @@ class ProductQuantity:
 
 
 @dataclass
-# This dataclass defines the shop entity. Consist of the nested dataclass.
+# This dataclass defines the shop entity. 
 class Shop:
     cash: float = 0.0
     stock: List[ProductStock] = field(default_factory=list)
 
 
 @dataclass
-# customer class
+# This dataclass is for customer class
 class Customer:
     name: str = ""
     budget: float = 0.0
@@ -48,14 +48,14 @@ class Customer:
 
 
 def create_and_stock_shop():
-    shop = Shop()  # starting an instance of the shop dataclass 
+    shop = Shop()  # starting an instancing of the shop dataclass 
     with open('Data/shop_stock.csv') as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=',')
         first_row = next(csv_reader)
-        # reads in the amount of cash in shop from file and then assigns it
+        # reading in the amount of cash in shop from file and then assigning it
         shop.cash = float(first_row[0])
         for row in csv_reader:
-            # starts an instance of Product; then assigns product name [0] and price [1]
+            # starting an instance of Product; and assigning product name [0] and also price [1]
             p = Product(row[0], float(row[1]))
             # starting an instance of ProductStock; and assigning the product stock
             ps = ProductStock(p, float(row[2]))
@@ -65,7 +65,7 @@ def create_and_stock_shop():
 
 
 
-def create_customer(file_path):
+def create_customer(file_path): # creating customer and reading in CSV file
     # print("inside 'create customer' function")  # for testing - ok
     # initialise an instance of the Customer dataclass - is this line necessary?
     customer = Customer()
@@ -90,7 +90,7 @@ def create_customer(file_path):
 
 
 
-def print_product(prod):
+def print_product(prod): # printing the product class
     # if the price is defined (we are showing the shop stock), then both name and price are shown otherwise(we are showing the customer shopping list) only product name is shown
     if prod.price == 0:
         print(f"Product: {prod.name};")
@@ -99,7 +99,7 @@ def print_product(prod):
 
 
 
-def print_customers_details(cust, sh):
+def print_customers_details(cust, sh): # customer details 
 
     # printing the Values of cust.name and cust.budget that refer to the customer's details that are defined in the dataclass instance (within 'Main' method).
     print(f"\nCustomer name: {cust.name}, budget: €{cust.budget:.2f}")
@@ -108,7 +108,7 @@ def print_customers_details(cust, sh):
     # starting the auxiliary variables
     total_cost = 0
 
-    # printing a customer's shopping list
+    # printing the customer's shopping list
     print(f"{cust.name} wants the following products: ")
 
     # looping over all the items in the customer shopping list
@@ -183,16 +183,16 @@ def print_customers_details(cust, sh):
 
 
 
-def process_order(cust, sh, total_cost):
+def process_order(cust, sh, total_cost): # processing the customers order
 
-    # Checking if the customer can afford the desired items
-    if (cust.budget < total_cost):  # if the customer is short of money
+    # Checking if the customer has enough money for items
+    if (cust.budget < total_cost):  # if the customer has not enough money
         print(
             f"Unfortunately, the customer does not have enough money for all the desired items - short of €{(total_cost - cust.budget):.2f}. ", end="")
         print(
             f"Shopping aborted. Come back with more money or negotiate your shopping list.\n")
 
-    else:  # else the customer has enough money
+    else:  # else if the customer has enough money for items
         print(f"Processing...")
 
         # loop over the items in the customer shopping list
@@ -258,7 +258,7 @@ def process_order(cust, sh, total_cost):
 
 
 
-def interactive_mode(sh, budget):
+def interactive_mode(sh, budget): # starting the live mode for customer
 
     # print(f"Budget: {budget:.2f}")  # for testing - ok
 
