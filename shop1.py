@@ -46,9 +46,7 @@ class Customer:
 
 
 
-# ----- ----- ----- ----- -----
-# Create shop - read data from file
-# ----- ----- ----- ----- -----
+
 def create_and_stock_shop():
     shop = Shop()  # starting an instance of the shop dataclass 
     with open('Data/shop_stock.csv') as csv_file:
@@ -386,10 +384,7 @@ separator = "=" * 15
 
 def display_menu():#displaying the shop menu with all options for choice
 
-    print("")
-    print(separator)
-    print("Shop Main Menu (Python procedural):")
-    print(separator)
+    
     print("1 - Shop status")
     print("2 - Customer A - good case")
     print("3 - Customer B - insufficient funds case")
