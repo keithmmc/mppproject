@@ -22,26 +22,24 @@ class Product_stock: # setting up the product stock class
         self.product = product
         self.quantity = quantity
 
-    # below is just a convenience method that allows using 'name' rather than 'self.product.name' (self is instance of the class)
-    def name(self):
+    
+    def name(self): # the self method for this class
         return self.product.name
 
-    def unit_price(self):
+    def unit_price(self): # unit price
         return self.product.price
 
-    def cost(self):
+    def cost(self): # getting the cost of the project
         return self.unit_price() * self.quantity
 
     def __repr__(self):
-        # self.product below is an instance of a class
+        # self.product below is an instance of a class 
         return f"{self.product} \tAvailable amount: {self.quantity:.0f}"
 
-# ----- ----- ----- ----- -----
-# Customer class
-# ----- ----- ----- ----- -----
 
 
-class Customer:
+
+class Customer: # customer class The below code reads in the customer CSV file
 
     def __init__(self, path):
         self.shopping_list = []
@@ -57,11 +55,11 @@ class Customer:
                 ps = Product_stock(p, quantity)
                 self.shopping_list.append(ps)
 
-    def get_costs(self, price_list):
+    def get_costs(self, price_list): # getting costs of product
         total_cost = 0
         for list_item in self.shopping_list:
             for shop_item in price_list:
-                if (list_item.name() == shop_item.name()):  # the product is in stock
+                if (list_item.name() == shop_item.name()):  # if the product is in stock
                     list_item.product.price = shop_item.unit_price()
                     sub_total = list_item.quantity * list_item.product.price
                     total_cost = + sub_total
@@ -82,14 +80,9 @@ class Customer:
 
         return cost
 
-    # ----- ----- ----- ----- -----
-    # Evaluate customer's shopping list
-    # ----- ----- ----- ----- -----
-
-    def evaluate_order(self, sh):
-        '''
-        Shows customers details (budget, shopping list) and calculates total cost of shopping
-        '''
+    
+    def evaluate_order(self, sh): # evaluating the customers order
+        
         # Show customers details
         print(f"\nCustomer name: {self.name}, budget: €{self.budget:.2f}")
         print("---- ---- ----")
@@ -214,16 +207,12 @@ class Customer:
         return str
 
 
-# ----- ----- ----- ----- -----
-# Shop class
-# ----- ----- ----- ----- -----
+
 
 class Shop:
 
     def __init__(self, path):
-        '''
-        # Create shop - read data from file
-        '''
+       
         self.stock = []
         with open(path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
@@ -234,9 +223,7 @@ class Shop:
                 ps = Product_stock(p, float(row[2]))
                 self.stock.append(ps)
 
-    # ----- ----- ----- ----- -----
-    # update shop stock, shop cash, customer money (shopping list considered as an entity)
-    # ----- ----- ----- ----- -----
+   
 
     def process_order(self, cust, sh, total_cost, total_order_list):
 
@@ -308,9 +295,7 @@ class Shop:
             print(f"{cust.name}'s remaining money is €{cust.budget:.2f}.")
             print("")
 
-    # ----- ----- ----- ----- -----
-    # interactive(live) mode
-    # ----- ----- ----- ----- -----
+ 
 
     def interactive_mode(self, sh, budget):
 
@@ -418,9 +403,7 @@ class Shop:
             if (match_exist == 0):  # product not available in stock
                 print("Product not found in shop.")
 
-    # ----- ----- ----- ----- -----
-    # The shop menu and main program functions
-    # ----- ----- ----- ----- -----
+   
 
     def display_menu(self):
 
@@ -429,10 +412,7 @@ class Shop:
         while True:  # this is a 'forever' loop, unless interupted (break)
 
             # Main menu screen
-            print("")
-            print(separator)
-            print("Shop Main Menu (Python OOP):")
-            print(separator)
+          
             print("1 - Shop status")
             print("2 - Customer A - good case")
             print("3 - Customer B - insufficient funds case")
@@ -502,7 +482,7 @@ class Shop:
 
                 # # get user's name
                 self.customer_name = input(
-                    "What's your name, good customer?: ")
+                    "What's your name ")
                 print(f"Welcome, {self.customer_name}. ")
 
                 # # get user's budget
@@ -520,9 +500,7 @@ class Shop:
                 print("Wrong key, try again.")
                 # display_menu(self)
 
-    # ----- ----- ----- ----- -----
-    # The shop self representation
-    # ----- ----- ----- ----- -----
+  
 
     def __repr__(self):
         str = ""
@@ -533,23 +511,15 @@ class Shop:
         return str
 
 
-'''
-# ===== ===== ===== ===== ===== =====
-# The main function - start of the program
-# ===== ===== ===== ===== ===== =====
-'''
 
 
-def main():
-    '''
-    This is the main function the program. It defines a starting point and controls all other functionality of the program. It is called automatically at the program start.
-    '''
+def main(): # main function 
 
     # Clear screen
     os.system("cls")   # for Windows systems
     os.system("clear")  # for Linux systems
 
-    print("\n\n>>> Multi-Paradigm Programming Project by Andrzej Kocielski, 2020 <<<")
+ 
 
     # Create shop only once, upon the program start; assign data from a file to variable shop_one.
     shop_one = Shop("Data/shop_stock.csv")
@@ -566,11 +536,6 @@ def main():
     
 
 
-'''
-# ===== ===== ===== ===== ===== =====
-# Check dependencies
-# ===== ===== ===== ===== ===== =====
-'''
 
 if __name__ == "__main__":
     # execute only if run as a script
