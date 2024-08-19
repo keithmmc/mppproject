@@ -205,6 +205,49 @@ def live_order(s)
   c
 end 
 
+def main 
+  clear 
+  puts "Setting up shop for today"
+  s = create_and_stock_shop
+
+  loop do 
+    show_menu 
+    print "\nPlease select option from the main menu: "
+    choice = gets.chomp
+    case choice 
+    when "1"
+      puts "1: SHOP OVERVIEW"
+      print_shop(s)
+      return_to_menu
+    when "2"
+      puts "2: BATCH ORDERS"
+      c = read_customer
+      if c
+        print_customer(c, s)
+        process_order(c, s)
+      end 
+      return_to_menu
+    end 
+  when "3"
+    puts "Please choose from our products listed below"
+      print_shop(s)
+      c = live_order(s)
+      print_customer(c, s)
+      process_order(c, s)
+      return_to_menu
+    when "0"
+      puts "\nThank you for shopping here. Goodbye."
+      break
+    else
+      show_menu
+    end
+  end
+end
+
+if __FILE__ == $0
+  main
+end
+
 
 
 
