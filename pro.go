@@ -124,5 +124,48 @@ func returnToMenu() {
 }
 
 func showMenu() {
+	clear()
+	fmt.Println("\n\n")
+	fmt.Println("\t\tWelcome to the ATU shop")
+	fmt.Println("\t\t----------------------------------")
+	fmt.Println("\t\tSelect 1 for Shop Overview")
+	fmt.Println("\t\tSelect 2 for Batch orders")
+	fmt.Println("\t\tSelect 3 for Live orders")
+	fmt.Println("\t\tSelect 0 to Exit Shop Application")
 
+}
+
+func processOrder(c Customer, s Shop) {
+	fmt.Println("Processing order")
+	fmt.Println("----------------")
+	totalProductCost := 0.0
+	for _, item := range c.ShoppingList {
+		for i, prod := range s.Stock {
+			if item.Product.Name == prod.Product.Name {
+				if prod.Quantity >= item.Quantity {
+					totalProductCost = float64(item.Quantity) * prod.Product.Price
+					if c.Budget >= totalProductCost {
+						s.Cash += totalProductCost
+						c.Budget -= totalProductCost
+						fmt.Printf("€%.2f deducted from the customer funds for %d of %s.\n", totalProductCost, item.Quantity, item.Product.Name)
+						s.Stock[i].Quantity -= item.Quantity
+					} else {
+						fmt.Printf("You have insufficient funds, you only have €%.2f but you need €%.2f to pay for %s\n", c.Budget, totalProductCost, item.Product.Name)
+					}
+				} else {
+					fmt.Printf("We only have %d of %s at the moment. You will be charged only for the products sold.\n", prod.Quantity, prod.Product.Name)
+					totalProductCost = float64(prod.Quantity) * prod.Product.Price
+					if c.Budget >= totalProductCost {
+						fmt.Printf("€%.2f deducted from the customer funds for %d unit(s) of %s.\n", totalProductCost, prod.Quantity, item.Product.Name)
+						s.Stock[i].Quantity = 0
+						s.Cash += totalProductCost
+						c.Budget -= totalProductCost
+					} else {
+						fmt.Printf("Insufficient funds, Customer has €%.2f but €%.2f required for %s\n", c.Budget, totalProductCost, item.Product.Name)
+					}
+				}
+			}
+		}
+	}
+	fmt.Printf("UPDATING CASH\n-------------------\nCustomer %s has €%.2f left\n.", c.Name, c.Budget)
 }
